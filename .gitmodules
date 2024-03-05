@@ -1,0 +1,3 @@
+[submodule "rpi/vendor/dlib"]
+	path = rpi/vendor/dlib
+	url = https://github.com/davisking/dlib
