@@ -1,67 +1,66 @@
-// The contents of this file are in the public domain. See LICENSE_FOR_EXAMPLE_PROGRAMS.txt
-
-/*
-
-    This is a simple example illustrating the use of the logger object from
-    the dlib C++ Library.
-
-
-    The output of this program looks like this:
-
-    0 INFO  [0] example: This is an informational message.
-    0 DEBUG [0] example: The integer variable is set to 8
-    0 WARN  [0] example: The variable is bigger than 4!  Its value is 8
-    0 INFO  [0] example: we are going to sleep for half a second.
-  503 INFO  [0] example: we just woke up
-  503 INFO  [0] example: program ending
-
-
-    The first column shows the number of milliseconds since program start at the time
-    the message was printed, then the logging level of the message, then the thread that
-    printed the message, then the logger's name and finally the message itself.
-
-*/
-
-
+//#include <dlib/image_processing/frontal_face_detector.h>
+//#include <dlib/image_processing/render_face_detections.h>
+//#include <dlib/image_processing.h>
+//#include <dlib/image_io.h>
 #include <dlib/logger.h>
 #include <dlib/misc_api.h>
+#include <iostream>
 
-using namespace dlib;
+dlib::logger dlog("main");
 
-// Create a logger object somewhere.  It is usually convenient to make it at the global scope
-// which is what I am doing here.  The following statement creates a logger that is named example.
-logger dlog("example");
+int main(int argc, char** argv) {
+  dlog << dlib::LINFO << "No input image provided";
 
-int main()
-{
-    // Every logger has a logging level (given by dlog.level()).  Each log message is tagged with a
-    // level and only levels equal to or higher than dlog.level() will be printed.  By default all
-    // loggers start with level() == LERROR.  In this case I'm going to set the lowest level LALL
-    // which means that dlog will print all logging messages it gets.
-    dlog.set_level(LALL);
+  return 0;
+}
 
 
-    // print our first message.  It will go to cout because that is the default.
-    dlog << LINFO << "This is an informational message.";
+  /*
+  cv::Mat frame, gray_frame;
 
-    // now print a debug message.
-    int variable = 8;
-    dlog << LDEBUG << "The integer variable is set to " << variable;
+  //// INITIALIZE VIDEOCAPTURE
+  cv::VideoCapture cap;
+  cap.open(0);
+  // check if we succeeded
+  if (!cap.isOpened()) {
+    std::cerr << "unable to open camera\n";
+    return -1;
+  }
 
-    // the logger can be used pretty much like any ostream object.  But you have to give a logging
-    // level first.  But after that you can chain << operators like normal.
+  //// INITIALIZE FACE DETECTOR
+  cv::String haar_detector_path = "haarcascade_frontalface_default.xml";
+  cv::CascadeClassifier face_cascade;
 
-    if (variable > 4)
-        dlog << LWARN << "The variable is bigger than 4!  Its value is " << variable;
+  if(!face_cascade.load(HAAR_CASCADE_PATH+haar_detector_path)){
+    std::cout << "error loading face cascade from path: " << HAAR_CASCADE_PATH+haar_detector_path << "\n";
+    return -1;
+  }
 
+  //// GRAB AND WRITE LOOP
+  std::cout << "press any key to terminate\n";
+  for (;;) {
+    // wait for a new frame from camera and store it into 'frame'
+    if (!cap.read(frame)) {
+      std::cerr << "error reading frame\n";
+      break;
+    }
+    // convert to gray scale
+    cv::cvtColor(frame, gray_frame, cv::COLOR_BGR2GRAY);
+    std::vector<cv::Rect> faces;
+    face_cascade.detectMultiScale(gray_frame, faces);
+    if (faces.empty()) {
+      cv::putText(frame, "no face detected", cv::Point(10, 50), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 255), 2);
+    }
+    for (auto& face : faces) {
+      cv::rectangle(frame, face, cv::Scalar(0, 255, 0), 2);
+    }
 
-
-    dlog << LINFO << "we are going to sleep for half a second.";
-    // sleep for half a second
-    dlib::sleep(500);
-    dlog << LINFO << "we just woke up";
-
-
-
-    dlog << LINFO << "program ending";
+    // show detector frame and wait for a key with timeout long enough to show images
+    imshow("detector", frame);
+    if (cv::waitKey(5) >= 0)
+      break;
+  }
+  // the camera will be deinitialized automatically in VideoCapture destructor
+  return 0;
+   */
 }
